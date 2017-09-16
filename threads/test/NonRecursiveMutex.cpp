@@ -32,8 +32,8 @@ void traverse()
 	{
 		it->doit();
 	}
-	Foo foo;
-	post(foo);
+	//Foo foo;
+	//post(foo);
 }
 
 int main()
