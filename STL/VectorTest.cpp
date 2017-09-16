@@ -61,7 +61,7 @@ void iterator_losseffect_erase()
 	cout << "iterator_losseffect_erase()-------\n";
 	vector<int> tmp;
 	tmp.reserve(10);
-	for(int i = 0; i < 10; i++)
+	for(int i = 0; i < 10; ++i)
 	{
 		tmp.push_back(i);
 	}

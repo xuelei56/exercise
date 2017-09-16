@@ -1,11 +1,18 @@
 //MutexLock and MutexLockGuard
+#ifndef MUTEX_H
+#define MUTEX_H
+
 #include <pthread.h>
+#include <unistd.h>
+#include <syscall.h>
+#include <assert.h>
 #include <iostream>
 
 class MutexLock
 {
 public:
 	MutexLock()
+	 : m_holder(0)
 	{
 		pthread_mutexattr_init(&m_mutexattr);
 		pthread_mutexattr_settype(&m_mutexattr, PTHREAD_MUTEX_NORMAL);
@@ -14,20 +21,28 @@ public:
 	
 	~MutexLock()
 	{
+		assert(m_holder == 0);
 		pthread_mutex_destroy(&m_mutex);
 		pthread_mutexattr_destroy(&m_mutexattr);
 	}
 
 	void Lock()
 	{
-		std::cout << "lock()" << std::endl;
 		pthread_mutex_lock(&m_mutex);
+		m_holder = syscall(SYS_gettid);
+	//	std::cout << m_holder << " lock{" << std::endl;
 	}
 
 	void UnLock()
 	{
+	//	std::cout << m_holder << " }unlock" << std::endl;
+		m_holder = 0;
 		pthread_mutex_unlock(&m_mutex);
-		std::cout << "unlock()" << std::endl;
+	}
+
+	pthread_mutex_t* getThreadMutex() 
+	{
+		return &m_mutex;
 	}
 
 protected:
@@ -37,6 +52,7 @@ protected:
 private:
 	pthread_mutexattr_t m_mutexattr;
 	pthread_mutex_t m_mutex;
+	pid_t m_holder;
 };
 
 class MutexLockGuard
@@ -59,3 +75,5 @@ protected:
 private:
 	MutexLock& m_ml;
 };
+
+#endif

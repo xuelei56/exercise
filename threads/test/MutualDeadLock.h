@@ -1,3 +1,6 @@
+#ifndef MUTUALDEADLOCK_H
+#define MUTUALDEADLOCK_H
+
 #include "Mutex.h"
 #include <iostream>
 #include <set>
@@ -50,3 +53,5 @@ public:
 private:
     mutable MutexLock m_ml;
 };
+
+#endif
