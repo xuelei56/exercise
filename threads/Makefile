@@ -9,11 +9,13 @@ BINDIR = bin
 TESTS = $(BINDIR)/BlockingQueueTest \
 	$(BINDIR)/ConditionTest \
 	$(BINDIR)/CountDownLatchTest \
-	$(BINDIR)/SingletonTest \
 	$(BINDIR)/MutexTest \
 	$(BINDIR)/MutualDeadLock \
+	$(BINDIR)/NonRecursiveMutex \
 	$(BINDIR)/SelfDeadLock \
-	$(BINDIR)/NonRecursiveMutex 
+	$(BINDIR)/SingletonTest \
+	$(BINDIR)/ThreadPoolTest \
+	$(BINDIR)/ThreadTest 
 
 all: $(TESTS)
 
@@ -25,11 +27,13 @@ $(TESTS):
 $(BINDIR)/BlockingQueueTest: $(TESTDIR)/BlockingQueueTest.cpp
 $(BINDIR)/ConditionTest: $(TESTDIR)/ConditionTest.cpp
 $(BINDIR)/CountDownLatchTest: $(TESTDIR)/CountDownLatchTest.cpp CountDownLatch.cpp
-$(BINDIR)/SingletonTest: $(TESTDIR)/SingletonTest.cpp 
 $(BINDIR)/MutexTest: $(TESTDIR)/MutexTest.cpp
 $(BINDIR)/MutualDeadLock: $(TESTDIR)/MutualDeadLock.cpp
-$(BINDIR)/SelfDeadLock: $(TESTDIR)/SelfDeadLock.cpp
 $(BINDIR)/NonRecursiveMutex: $(TESTDIR)/NonRecursiveMutex.cpp
+$(BINDIR)/SelfDeadLock: $(TESTDIR)/SelfDeadLock.cpp
+$(BINDIR)/SingletonTest: $(TESTDIR)/SingletonTest.cpp 
+$(BINDIR)/ThreadPoolTest: $(TESTDIR)/ThreadPoolTest.cpp ThreadPool.cpp Thread.cpp
+$(BINDIR)/ThreadTest: $(TESTDIR)/ThreadTest.cpp Thread.cpp
 
 clean:
 	rm -f $(TESTS)

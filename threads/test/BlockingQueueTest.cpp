@@ -3,14 +3,14 @@
 #include <iostream>
 #include "BlockingQueue.h"
 
-BlockingQueue<int> g_taskQueue;
+BlockingQueue<int> g_dataQueue;
 
 void* threadPut(void* arg)
 {
 	static int num = 0;
 	while (1)
 	{
-		g_taskQueue.Put(num);
+		g_dataQueue.Put(num);
 		//warning: no lock
 		++num;
 		sleep(1);
@@ -28,7 +28,7 @@ int main()
 
 	while (1)
 	{
-		int num = g_taskQueue.Take();
+		int num = g_dataQueue.Take();
 		std::cout << num << std::endl;
 	}
 
