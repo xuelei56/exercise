@@ -13,18 +13,18 @@ class Inventory
 public:
     void Add(Request* req)
     {
-        MutexLockGuard guard(m_ml);
+        MutexLock lock(m_mutex);
         m_requests.insert(req);
     }
     void Remove(Request* req)
     {
-        MutexLockGuard guard(m_ml);
+        MutexLock lock(m_mutex);
         m_requests.erase(req);
     }
     void PrintAll() const;
 
 private:
-    mutable MutexLock m_ml;
+    mutable Mutex m_mutex;
     std::set<Request*> m_requests;
 };
 
@@ -35,23 +35,23 @@ class Request
 public:
     void Process()
     {
-        MutexLockGuard guard(m_ml);
+        MutexLock lock(m_mutex);
         std::cout << "Process()\n";
         g_inventory.Add(this);
     }
     void Print() const
     {
-        MutexLockGuard guard(m_ml);
+        MutexLock lock(m_mutex);
         std::cout << "Print()\n";
     }
     ~Request()
     {
-        MutexLockGuard guard(m_ml);
+        MutexLock lock(m_mutex);
         sleep(1); //为了容易复现死锁，延时
         g_inventory.Remove(this);
     }
 private:
-    mutable MutexLock m_ml;
+    mutable Mutex m_mutex;
 };
 
 #endif

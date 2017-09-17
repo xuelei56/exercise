@@ -9,13 +9,13 @@ public:
 	~WorkThread() {}
 	void Run()
 	{
-		MutexLockGuard guard(m_ml);
+		MutexLock lock(m_mutex);
 		count++;
 		std::cout << "count=" << count << std::endl;
 	}
 
 private:
-	MutexLock m_ml;
+	Mutex m_mutex;
 	int count;
 };
 

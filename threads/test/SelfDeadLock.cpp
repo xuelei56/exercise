@@ -5,17 +5,17 @@ class Request
 public:
 	void Process()
 	{
-		MutexLockGuard guard(m_ml);
+		MutexLock lock(m_mutex);
 		std::cout << "Process()\n";
 		Print();
 	}
 	void Print()
 	{
 		std::cout << "Print()" << std::endl;
-		MutexLockGuard guard(m_ml);
+		MutexLock lock(m_mutex);
 	}
 private:
-	MutexLock m_ml;
+	Mutex m_mutex;
 };
 
 int main()

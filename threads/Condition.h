@@ -9,8 +9,8 @@
 class Condition
 {
 public:
-	explicit Condition(MutexLock& ml)
-	 : m_ml(ml)
+	explicit Condition(Mutex& mutex)
+	 : m_mutex(mutex)
 	{
 		pthread_cond_init(&m_cond, NULL);
 	}
@@ -20,7 +20,7 @@ public:
 	}
 	void Wait()
 	{
-		pthread_cond_wait(&m_cond, m_ml.getThreadMutex());	//wait这一步会原子性的释放mutex，并在执行完毕后自动加锁
+		pthread_cond_wait(&m_cond, m_mutex.getThreadMutex());	//wait这一步会原子性的释放mutex，并在执行完毕后自动加锁
 		std::cout << syscall(SYS_gettid) << " Wait() one\n";
 	}
 	void Signal()
@@ -34,7 +34,7 @@ public:
 		std::cout << "Broadcast()\n";
 	}
 private:
-	MutexLock& m_ml;
+	Mutex& m_mutex;
 	pthread_cond_t m_cond;
 };
 

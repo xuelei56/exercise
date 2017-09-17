@@ -15,18 +15,18 @@ private:
 	int m_num;
 };
 
-MutexLock g_ml;
+Mutex g_mutex;
 std::vector<Foo> g_foos;
 
 void post(const Foo& foo)
 {
-	MutexLockGuard guard(g_ml);
+	MutexLock lock(g_mutex);
 	g_foos.push_back(foo);
 }
 
 void traverse()
 {
-	MutexLockGuard guard(g_ml);
+	MutexLock lock(g_mutex);
 	std::vector<Foo>::iterator it;
 	for (it = g_foos.begin(); it != g_foos.end(); ++it)
 	{

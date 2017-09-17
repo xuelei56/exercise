@@ -2,7 +2,7 @@
 
 void Inventory::PrintAll() const
 {
-	MutexLockGuard guard(m_ml);
+	MutexLock lock(m_mutex);
 	sleep(1);
 	for (std::set<Request*>::const_iterator it = m_requests.begin();
 		it != m_requests.end();

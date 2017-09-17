@@ -5,14 +5,14 @@
 #include <syscall.h>
 #include <deque>
 
-MutexLock g_ml;
-Condition g_cond(g_ml);
+Mutex g_mutex;
+Condition g_cond(g_mutex);
 std::deque<int> g_queue;
 
 int dequeue()
 {
-	MutexLockGuard guard(g_ml);
-	std::cout << syscall(SYS_gettid) << " get MutexLock"<< std::endl;
+	MutexLock lock(g_mutex);
+	std::cout << syscall(SYS_gettid) << " lock Mutex"<< std::endl;
 	//sleep(1);
 	while (g_queue.empty())
 	{
@@ -23,14 +23,14 @@ int dequeue()
 	assert(!g_queue.empty());
 	int data = g_queue.front();
 	g_queue.pop_front();
-	std::cout << syscall(SYS_gettid) << " release MutexLock"<< std::endl;
+	std::cout << syscall(SYS_gettid) << " unlock Mutex"<< std::endl;
 	return data;
 }
 
 void enqueue(int x)
 {
 	{
-		MutexLockGuard guard(g_ml);
+		MutexLock lock(g_mutex);
 		g_queue.push_back(x);
 	}
 	g_cond.Signal();
@@ -41,6 +41,7 @@ void* thread_func_get(void* arg)
 	while (1)
 	{
 		int n =	dequeue();
+		std::cout << "dequeue " << n << std::endl;
 	}
 	return NULL;
 }

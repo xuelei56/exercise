@@ -1,4 +1,4 @@
-//MutexLock and MutexLockGuard
+//Mutex and MutexLock
 #ifndef MUTEX_H
 #define MUTEX_H
 
@@ -8,10 +8,10 @@
 #include <assert.h>
 #include <iostream>
 
-class MutexLock
+class Mutex
 {
 public:
-	MutexLock()
+	Mutex()
 	 : m_holder(0)
 	{
 		pthread_mutexattr_init(&m_mutexattr);
@@ -19,7 +19,7 @@ public:
 		pthread_mutex_init(&m_mutex, &m_mutexattr);
 	}
 	
-	~MutexLock()
+	~Mutex()
 	{
 		assert(m_holder == 0);
 		pthread_mutex_destroy(&m_mutex);
@@ -46,8 +46,8 @@ public:
 	}
 
 protected:
-	MutexLock(const MutexLock& other);
-	MutexLock& operator=(const MutexLock& other);
+	Mutex(const Mutex& other);
+	Mutex& operator=(const Mutex& other);
 
 private:
 	pthread_mutexattr_t m_mutexattr;
@@ -55,25 +55,25 @@ private:
 	pid_t m_holder;
 };
 
-class MutexLockGuard
+class MutexLock
 {
 public:
-	explicit MutexLockGuard(MutexLock& ml)
-	 : m_ml(ml)
+	explicit MutexLock(Mutex& mutex)
+	 : m_mutex(mutex)
 	{
-		m_ml.Lock();
+		m_mutex.Lock();
 	}
-	~MutexLockGuard()
+	~MutexLock()
 	{ 
-		m_ml.UnLock();
+		m_mutex.UnLock();
 	}
 
 protected:
-	MutexLockGuard(const MutexLockGuard& other);
-	MutexLockGuard& operator=(const MutexLockGuard& other);
+	MutexLock(const MutexLock& other);
+	MutexLock& operator=(const MutexLock& other);
 
 private:
-	MutexLock& m_ml;
+	Mutex& m_mutex;
 };
 
 #endif
