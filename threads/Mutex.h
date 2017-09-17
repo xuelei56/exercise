@@ -30,12 +30,10 @@ public:
 	{
 		pthread_mutex_lock(&m_mutex);
 		m_holder = syscall(SYS_gettid);
-	//	std::cout << m_holder << " lock{" << std::endl;
 	}
 
 	void UnLock()
 	{
-	//	std::cout << m_holder << " }unlock" << std::endl;
 		m_holder = 0;
 		pthread_mutex_unlock(&m_mutex);
 	}
@@ -43,6 +41,16 @@ public:
 	pthread_mutex_t* getThreadMutex() 
 	{
 		return &m_mutex;
+	}
+
+	bool IsLockedByThisThread()
+	{
+		return m_holder == syscall(SYS_gettid);
+	}
+
+	void AssertLocked()
+	{
+		assert(IsLockedByThisThread());
 	}
 
 protected:
@@ -75,5 +83,7 @@ protected:
 private:
 	Mutex& m_mutex;
 };
+
+#define MutexLock(x) static_assert(false, "missing MutexLock var name")
 
 #endif
